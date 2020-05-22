@@ -1,0 +1,65 @@
+---
+- hosts: all
+  remote_user: root
+  become: no
+  connection: ssh
+
+  tasks:
+   - name: Add group "ext_group" to remote server
+     group:
+       name: ext_group
+       state: present
+
+   - name: Make sure we have a 'wheel' group
+     group:
+       name=wheel
+       state=present
+
+   - name: Allow wheel group to have passwordless sudo
+     lineinfile:
+       dest: /etc/sudoers
+       state: present
+       regexp: '^%wheel'
+       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+
+   - name: Add user to remote server from In-Home Admins
+     user:
+       name: '{{ item }}'
+       group: users
+       append: yes
+       shell: /bin/bash
+       password: "{{ 'P@ssw0rd' | password_hash('sha512') }}"
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+       update_password: on_create
+     with_items:
+       - user1
+       - user2
+
+   - name: Add user to remote server from Ext_Group
+     user:
+       name: '{{ item }}'
+       group: users
+       groups: ext_group
+       append: yes
+       shell: /bin/bash
+       password: "{{ 'P@ssw0rd' | password_hash('sha512') }}"
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+       update_password: on_create
+     with_items:
+       - ext_user1
+       - ext_user2
+
+   - name: Add sudo users
+     user:
+       name: '{{ item }}'
+       group: users
+       groups: wheel
+     with_items:
+       - user1
+       - user2
+       - ext_user1
+       - ext_user2
