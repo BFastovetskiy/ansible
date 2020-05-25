@@ -16,8 +16,8 @@
 
   - name: Insert Index Page
     template:
-      src: hadoop.conf
-      dest: /etc/nginx/conf.d/hadoop.conf
+      src: site.conf
+      dest: /etc/nginx/conf.d/site.conf
 
   - name: Start NGiNX
     service:
