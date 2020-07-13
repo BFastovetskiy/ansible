@@ -1,0 +1,24 @@
+---
+# Install and configure haproxy
+
+- name: install haproxy
+  yum: name=haproxy state=present
+
+- name: add user haproxy
+  user:
+    name: haproxy
+    comment: user for haproxy service
+    group: haproxy
+
+- name: append rules in firewalld
+  firewalld:
+    port: 80/tcp
+    permanent: yes
+    state: enabled
+
+- name: configure haproxy
+  template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
+  notify: restart haproxy
+
+- name: enable haproxy service
+  service: name=haproxy state=started enabled=yes

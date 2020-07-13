@@ -1,0 +1,10 @@
+---
+# Variables for keepalived service
+
+interface: eth0
+router_id: 230
+priority: 10
+pass: P@ssw0rd
+ip_address: 10.9.1.10
+ip_length: 24
+broadcast: 10.9.1.255

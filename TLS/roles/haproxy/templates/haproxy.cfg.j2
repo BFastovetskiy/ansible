@@ -1,0 +1,73 @@
+global
+  chroot      /var/lib/haproxy
+  pidfile     /var/run/haproxy.pid
+  user        haproxy
+  group       haproxy
+  daemon
+  log 127.0.0.1 local0
+  log 127.0.0.1 local1 debug
+  maxconn 8192
+
+defaults
+  log global
+  mode {{ mode }}
+  option {{ option_log }}
+  option dontlognull
+  option http-server-close
+  option http-pretend-keepalive
+  option forwardfor
+  option originalto
+  retries 3
+  option redispatch
+  timeout http-request    10s
+  timeout queue           1m
+  timeout connect         10s
+  timeout client          1m
+  timeout server          1m
+  timeout http-keep-alive 10s
+  timeout check           10s
+  maxconn 4096
+  default-server init-addr last,libc,none
+
+frontend stats
+  bind *:{{ haproxy_statistic_port }}
+  mode {{ mode }}
+  stats enable
+  stats uri /
+
+frontend http_in
+  bind *:{{ http_in_port }}
+  mode {{ mode }}
+  option {{ option_log }}
+
+  acl host_d1 hdr(host) -i app1.domain.net
+  acl host_d2 hdr(host) -i app2.domain.net
+
+  use_backend APP1_DOMAIN_NET if host_d1
+  use_backend APP2_DOMAIN_NET if host_d2
+
+  default_backend DEFAULT_BACKEND_APP
+
+backend DEFAULT_BACKEND_APP
+  mode {{ mode }}
+  http-request set-header host {{ app-nologin }}.apps.cluster.local
+  balance {{ balance }}
+  server {{ app-nologin }}-server1 {{ server_1 }}:80 check
+  server {{ app-nologin }}-server2 {{ server_2 }}:80 check
+  server {{ app-nologin }}-server3 {{ server_3 }}:80 check
+
+backend APP1_DOMAIN_NET
+  mode {{ mode }}
+  http-request set-header host {{ app_1 }}-{{ release }}.apps.cluster.local
+  balance {{ balance }}
+  server {{ app_1 }}-server1 {{ server_1 }}:80 check
+  server {{ app_1 }}-server2 {{ server_2 }}:80 check
+  server {{ app_1 }}-server3 {{ server_3 }}:80 check
+
+backend APP2_DOMAIN_NET
+  mode {{ mode }}
+  http-request set-header host {{ app_2 }}-{{ release }}.apps.cluster.local
+  balance {{ balance }}
+  server {{ app_2 }}-server1 {{ server_1 }}:80 check
+  server {{ app_2 }}-server2 {{ server_2 }}:80 check
+  server {{ app_2 }}-server3 {{ server_3 }}:80 check

@@ -1,0 +1,21 @@
+[haproxy]
+dmz-cluster-tls01    ansible_connection=local
+dmz-cluster-tls02    ansible_connection=ssh    ansible_host=10.9.1.12
+dmz-cluster-tls03    ansible_connection=ssh    ansible_host=10.9.1.13
+
+[keepalived-master]
+dmz-cluster-tls02
+
+[keepalived-master:vars]
+state=MASTER
+
+[keepalived-slave]
+dmz-cluster-tls02
+dmz-cluster-tls03
+
+[keepalived-slave:vars]
+state=BACKUP
+
+[keepalived:children]
+keepalived-master
+keepalived-slave

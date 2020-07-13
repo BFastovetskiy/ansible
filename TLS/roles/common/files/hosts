@@ -1,0 +1,12 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+104.24.123.146    ifconfig.io
+
+10.9.1.11      dmz-cluster-tls01    tls-n01
+10.9.1.12      dmz-cluster-tls02    tls-n02
+10.9.1.13      dmz-cluster-tls03    tls-n03
+
+10.9.2.11      portal-n01.cluster.local
+10.9.2.12      portal-n02.cluster.local
+10.9.2.13      portal-n03.cluster.local

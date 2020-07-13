@@ -1,0 +1,33 @@
+---
+
+- name: Switch Green/Blue release on OpenShift cluster
+  hosts: haproxy
+  tasks:
+    - name: Include variables
+      include_vars: /etc/ansible/group_vars/haproxy.yml
+
+    - name: Get current release version
+      shell: grep green -c /etc/haproxy/haproxy.cfg
+      register: is_green
+      ignore_errors: true
+
+    - name: Current release is Blue version
+      set_fact:
+        release: green
+      when: is_green.stdout == "0"
+
+    - name: Current release is Green version
+      set_fact:
+        release: blue
+      when: is_green.stdout != "0"
+
+    - debug: msg="New release version is {{ release }}"
+
+    - name: Switch router
+      template:
+        src: /etc/ansible/roles/haproxy/templates/haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
+        backup: yes
+
+    - name: Restart haproxy
+      service: name=haproxy state=restarted

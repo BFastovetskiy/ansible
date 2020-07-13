@@ -1,0 +1,5 @@
+---
+# The common files for all roles in tls
+
+- name: Set hosts files in all servers
+  copy: src=hosts dest=/etc/hosts

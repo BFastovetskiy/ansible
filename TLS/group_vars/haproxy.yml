@@ -1,0 +1,16 @@
+---
+# Variables for load balansing servers
+
+haproxy_statistic_port: 8080
+http_in_port: 80
+haproxy_statistic_port_tcp: 8080/tcp
+http_in_port_tcp: 80/tcp
+mode: http
+option_log: httplog
+balance: roundrobin
+server_1: 10.9.2.11
+server_2: 10.9.2.12
+server_3: 10.9.2.13
+app_default: app-nologin
+app_1: app1
+app_2: app2

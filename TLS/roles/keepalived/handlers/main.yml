@@ -1,0 +1,5 @@
+---
+# Handlers for keepalived
+
+- name: restart keepalived
+  service: name=keepalived state=restarted
