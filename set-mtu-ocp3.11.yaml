@@ -1,0 +1,29 @@
+---
+- name: Set MTU 1500
+hosts: all
+tasks:
+- name: Set MTU to bond0
+lineinfile:
+path: /etc/sysconfig/network-scripts/ifcfg-bond0
+regexp: '^MTU='
+line: 'MTU=1500'
+backup: yes
+
+- name: Set MTU to bond0 slave 0
+lineinfile:
+path: /etc/sysconfig/network-scripts/ifcfg-bond0_slave_1
+regexp: '^MTU='
+line: 'MTU=1500'
+backup: yes
+
+- name: Set MTU to bond0 slave 1
+lineinfile:
+path: /etc/sysconfig/network-scripts/ifcfg-bond0_slave_2
+regexp: '^MTU='
+line: 'MTU=1500'
+backup: yes
+
+- name: Restart network
+service:
+name: network
+state: restarted
