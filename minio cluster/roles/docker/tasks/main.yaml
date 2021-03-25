@@ -1,0 +1,39 @@
+---
+# Install and configure Docker CE
+
+- name: Remove old version Docker
+  yum:
+    name:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+    state: removed
+
+- name: Add Docker-CE repository
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+
+- name: Cached actual repos data
+  shell:
+    cmd: yum clean all && yum repolist all
+    warn: false
+
+- name: Install actual Docker-CE version
+  yum:
+    name:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    state: latest
+
+- name: Enable and Re/Start Docker service
+  service:
+    name: docker
+    enabled: yes
+    state: restarted

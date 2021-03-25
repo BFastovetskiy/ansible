@@ -1,0 +1,12 @@
+---
+# Prepair hosts
+
+- name: Install common components
+  hosts: all
+  roles:
+  - common
+
+- name: Prepare and install Docker servers
+  hosts: docker
+  roles:
+  - docker

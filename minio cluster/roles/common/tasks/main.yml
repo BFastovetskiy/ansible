@@ -19,6 +19,7 @@
       - net-tools
       - nano
       - mlocate
+      - git
     state: latest
 
 - name: Update database for locate
