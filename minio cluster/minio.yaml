@@ -1,0 +1,10 @@
+---
+# Prepair hosts
+
+- hosts: all
+  roles:
+  - common
+
+- hosts: minio
+  roles:
+  - minio
